@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CalculatorWPF/CalculatorWPF.csproj" />
+  <Project Path="CalculatorWPF.Tests/CalculatorWPF.Tests.csproj" />
+</Solution>
