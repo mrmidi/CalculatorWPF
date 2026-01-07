@@ -76,9 +76,13 @@ namespace CalculatorWPF.Tests.Services
             // Arrange
             var tokenizer = new Tokenizer("2.5 + 3");
 
-            // Act & Assert
-            var exception = Assert.Throws<InvalidOperationException>(() => tokenizer.Tokenize());
-            Assert.Contains("Decimal numbers are not supported", exception.Message);
+            // Act
+            var tokens = tokenizer.Tokenize();
+
+            // Assert
+            Assert.Equal(4, tokens.Count); // 2.5, +, 3, EOF
+            Assert.Equal(TokenType.Number, tokens[0].Type);
+            Assert.Equal(2.5m, tokens[0].Value);
         }
 
         [Fact]

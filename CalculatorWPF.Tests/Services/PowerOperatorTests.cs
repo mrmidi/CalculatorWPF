@@ -1,4 +1,4 @@
-using System.Numerics;
+
 using CalculatorWPF.Services;
 using Xunit;
 
@@ -21,7 +21,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_SimplePower_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -33,7 +33,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_PowerRightAssociative_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -47,7 +47,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_PowerPrecedence_PowerHasHighestPrecedence(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -60,25 +60,31 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_PowerWithMultipleOperators_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
         }
 
         [Fact]
-        public void Evaluate_NegativeExponent_ThrowsException()
+        public void Evaluate_NegativeExponent_ReturnsCorrectResult()
         {
-            // Act & Assert
-            var exception = Assert.Throws<InvalidOperationException>(() => _evaluator.Evaluate("2 ^ -3"));
-            Assert.Contains("Negative exponents are not supported", exception.Message);
+            // Arrange
+            string expression = "2 ^ -3";
+            decimal expected = 0.125m; // 2^-3 = 1/8
+
+            // Act
+            decimal result = _evaluator.Evaluate(expression);
+
+            // Assert
+            Assert.Equal(expected, result);
         }
 
         [Fact]
         public void Evaluate_ZeroToZero_ReturnsOne()
         {
             // Act
-            BigInteger result = _evaluator.Evaluate("0 ^ 0");
+            decimal result = _evaluator.Evaluate("0 ^ 0");
 
             // Assert
             Assert.Equal(1, (long)result);
@@ -90,7 +96,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_ZeroToPositivePower_ReturnsZero(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -102,7 +108,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_OneToAnyPower_ReturnsOne(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -112,11 +118,11 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_LargePower_ReturnsCorrectResult()
         {
             // Arrange
-            string expression = "2 ^ 100";
-            BigInteger expected = BigInteger.Parse("1267650600228229401496703205376");
+            string expression = "2 ^ 20";
+            decimal expected = 1048576;
 
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, result);
@@ -129,7 +135,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_NegativeBasePower_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);

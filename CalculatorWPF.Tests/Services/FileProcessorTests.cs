@@ -68,8 +68,8 @@ namespace CalculatorWPF.Tests.Services
             Assert.True(result.Success);
             string[] outputLines = await File.ReadAllLinesAsync(outputFile);
             Assert.StartsWith("Error - Invalid character: 'a'", outputLines[0]);
-            Assert.Equal("0", outputLines[1]); // 2 / 3 = 0 (integer division)
-            Assert.Contains("Decimal numbers are not supported", outputLines[2]);
+            Assert.Equal("0.6666666666666666666666666667", outputLines[1]); // 2 / 3 with decimal support
+            Assert.Equal("4.2", outputLines[2]); // 2.1 * 2 now works with decimal support
         }
 
         [Fact]
@@ -190,8 +190,8 @@ namespace CalculatorWPF.Tests.Services
             Assert.Equal(4, outputLines.Length);
             Assert.Equal("-4", outputLines[0]); // 2 + (-3 * 2) = 2 + (-6) = -4
             Assert.StartsWith("Error - Invalid character: 'a'", outputLines[1]);
-            Assert.Equal("0", outputLines[2]); // 2 / 3 = 0
-            Assert.Contains("Decimal numbers are not supported", outputLines[3]);
+            Assert.Equal("0.6666666666666666666666666667", outputLines[2]); // 2 / 3 with decimal support
+            Assert.Equal("4.2", outputLines[3]); // 2.1 * 2 now works with decimal support
         }
 
         private string CreateTestFile(string content)

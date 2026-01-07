@@ -1,4 +1,4 @@
-using System.Numerics;
+
 using CalculatorWPF.Services;
 using Xunit;
 
@@ -21,7 +21,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_SubtractionEdgeCases_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -35,7 +35,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_NegativeMinusEdgeCases_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -50,7 +50,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_ZeroSubtractionEdgeCases_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -64,7 +64,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_ChainedSubtractionEdgeCases_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -78,7 +78,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_ParenthesesSubtractionEdgeCases_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -94,7 +94,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_ZeroOperationsEdgeCases_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -108,7 +108,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_OneMultiplicationEdgeCases_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -124,7 +124,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_OneDivisionEdgeCases_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -141,7 +141,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_PowerEdgeCases_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -156,7 +156,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_SingleNumberInParentheses_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -170,7 +170,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_MixedAdditionSubtractionEdgeCases_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -184,7 +184,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_LongSubtractionChains_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -198,7 +198,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_SubtractionWithPowerEdgeCases_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -212,7 +212,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_DoubleSubtractionMultiplication_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -226,7 +226,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_LargeNumberSubtractionEdgeCases_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);

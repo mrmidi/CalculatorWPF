@@ -1,4 +1,4 @@
-using System.Numerics;
+
 using CalculatorWPF.Services;
 using Xunit;
 
@@ -21,7 +21,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_SimpleOperations_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -34,7 +34,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_OperatorPrecedence_MultipliesFirst(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -47,7 +47,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_OperatorPrecedence_DividesFirst(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -72,10 +72,10 @@ namespace CalculatorWPF.Tests.Services
         {
             // Arrange
             string expression = "999999999999999999999 + 1";
-            BigInteger expected = BigInteger.Parse("1000000000000000000000");
+            decimal expected = decimal.Parse("1000000000000000000000");
 
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, result);
@@ -88,7 +88,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_NegativeNumbers_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -101,7 +101,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_MultipleOperations_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);
@@ -113,7 +113,7 @@ namespace CalculatorWPF.Tests.Services
         public void Evaluate_ComplexExpression_ReturnsCorrectResult(string expression, long expected)
         {
             // Act
-            BigInteger result = _evaluator.Evaluate(expression);
+            decimal result = _evaluator.Evaluate(expression);
 
             // Assert
             Assert.Equal(expected, (long)result);

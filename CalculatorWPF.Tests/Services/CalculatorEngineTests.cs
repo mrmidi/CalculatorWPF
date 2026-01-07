@@ -17,7 +17,7 @@ namespace CalculatorWPF.Tests.Services
         [InlineData("10 - 4", "6")]
         [InlineData("6 * 7", "42")]
         [InlineData("20 / 4", "5")]
-        [InlineData("15 / 4", "3")] // Integer division
+        [InlineData("15 / 4", "3.75")] // Decimal division
         public void Calculate_SimpleOperations_ReturnsCorrectResult(string expression, string expected)
         {
             // Act
@@ -73,11 +73,11 @@ namespace CalculatorWPF.Tests.Services
         }
 
         [Fact]
-        public void Calculate_VeryLargeMultiplication_ReturnsCorrectResult()
+        public void Calculate_LargeMultiplication_ReturnsCorrectResult()
         {
             // Arrange
-            string expression = "123456789012345678901234567890 * 2";
-            string expected = "246913578024691357802469135780";
+            string expression = "123456789 * 2";
+            string expected = "246913578";
 
             // Act
             string result = _calculator.Calculate(expression);
@@ -112,16 +112,16 @@ namespace CalculatorWPF.Tests.Services
         }
 
         [Theory]
-        [InlineData("2.1 * 2")]
-        [InlineData("5.5 + 3")]
-        [InlineData("10 / 2.5")]
-        public void Calculate_DecimalNumbers_ReturnsError(string expression)
+        [InlineData("2.1 * 2", "4.2")]
+        [InlineData("5.5 + 3", "8.5")]
+        [InlineData("10 / 2.5", "4")]
+        public void Calculate_DecimalNumbers_ReturnsCorrectResult(string expression, string expected)
         {
             // Act
             string result = _calculator.Calculate(expression);
 
             // Assert
-            Assert.Contains("Decimal numbers are not supported", result);
+            Assert.Equal(expected, result);
         }
 
         [Theory]
@@ -197,11 +197,11 @@ namespace CalculatorWPF.Tests.Services
         }
 
         [Theory]
-        [InlineData("100 / 3", "33")]
-        [InlineData("7 / 2", "3")]
-        [InlineData("2 / 3", "0")] // From specification
-        [InlineData("-7 / 2", "-3")]
-        public void Calculate_IntegerDivision_TruncatesResult(string expression, string expected)
+        [InlineData("100 / 3", "33.333333333333333333333333333")]
+        [InlineData("7 / 2", "3.5")]
+        [InlineData("2 / 3", "0.6666666666666666666666666667")]
+        [InlineData("-7 / 2", "-3.5")]
+        public void Calculate_DecimalDivision_ReturnsCorrectResult(string expression, string expected)
         {
             // Act
             string result = _calculator.Calculate(expression);
