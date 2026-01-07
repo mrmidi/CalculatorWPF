@@ -19,7 +19,7 @@ Integer calculator with WPF interface. Supports basic math operations and batch 
 
 ## Requirements
 
-- .NET 8 SDK
+- .NET 10 SDK
 - Windows (WPF requires Windows)
 
 ## Building

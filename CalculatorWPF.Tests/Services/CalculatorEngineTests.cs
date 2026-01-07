@@ -140,7 +140,6 @@ namespace CalculatorWPF.Tests.Services
         [Theory]
         [InlineData("5 +")]
         [InlineData("* 3")]
-        [InlineData("10 + + 5")]
         public void Calculate_InvalidSyntax_ReturnsError(string expression)
         {
             // Act
@@ -148,6 +147,19 @@ namespace CalculatorWPF.Tests.Services
 
             // Assert
             Assert.StartsWith("Error", result);
+        }
+
+        [Theory]
+        [InlineData("+5", "5")]
+        [InlineData("10 + + 5", "15")]
+        [InlineData("+ 7", "7")]
+        public void Calculate_UnaryPlus_Supported_ReturnsCorrectResult(string expression, string expected)
+        {
+            // Act
+            string result = _calculator.Calculate(expression);
+
+            // Assert
+            Assert.Equal(expected, result);
         }
 
         [Theory]
