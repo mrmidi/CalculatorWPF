@@ -93,33 +93,27 @@ jobs:
         run: dotnet restore Calculator.Avalonia/Calculator.Avalonia.csproj
       
       - name: Build Avalonia macOS ARM64
-        run: dotnet publish Calculator.Avalonia/Calculator.Avalonia.csproj -c Release -r osx-arm64 --self-contained -p:PublishSingleFile=true -p:PublishTrimmed=false -o publish/osx-arm64
+        run: dotnet publish Calculator.Avalonia/Calculator.Avalonia.csproj -c Release -r osx-arm64 --self-contained -p:PublishTrimmed=false -o publish/osx-arm64
       
       - name: Build Avalonia macOS x64
-        run: dotnet publish Calculator.Avalonia/Calculator.Avalonia.csproj -c Release -r osx-x64 --self-contained -p:PublishSingleFile=true -p:PublishTrimmed=false -o publish/osx-x64
-      
-      - name: Create Universal Binary
-        run: |
-          mkdir -p publish/osx-universal
-          
-          # Use lipo to create universal binary
-          lipo -create \
-            publish/osx-arm64/Calculator.Avalonia \
-            publish/osx-x64/Calculator.Avalonia \
-            -output publish/osx-universal/Calculator.Avalonia
-          
-          chmod +x publish/osx-universal/Calculator.Avalonia
-          
-          # Verify universal binary
-          lipo -info publish/osx-universal/Calculator.Avalonia
+        run: dotnet publish Calculator.Avalonia/Calculator.Avalonia.csproj -c Release -r osx-x64 --self-contained -p:PublishTrimmed=false -o publish/osx-x64
       
       - name: Create macOS App Bundle
         run: |
           mkdir -p "CalculatorWPF.app/Contents/MacOS"
           mkdir -p "CalculatorWPF.app/Contents/Resources"
           
-          # Copy universal binary
-          cp publish/osx-universal/Calculator.Avalonia "CalculatorWPF.app/Contents/MacOS/CalculatorWPF"
+          # Copy all ARM64 files first (as base)
+          cp -r publish/osx-arm64/* "CalculatorWPF.app/Contents/MacOS/"
+          
+          # Create universal binary for main executable
+          lipo -create \
+            publish/osx-arm64/Calculator.Avalonia \
+            publish/osx-x64/Calculator.Avalonia \
+            -output "CalculatorWPF.app/Contents/MacOS/Calculator.Avalonia"
+          
+          # Rename to CalculatorWPF
+          mv "CalculatorWPF.app/Contents/MacOS/Calculator.Avalonia" "CalculatorWPF.app/Contents/MacOS/CalculatorWPF"
           chmod +x "CalculatorWPF.app/Contents/MacOS/CalculatorWPF"
           
           # Create Info.plist
@@ -133,7 +127,7 @@ jobs:
               <key>CFBundleIdentifier</key>
               <string>com.calculator.wpf</string>
               <key>CFBundleName</key>
-              <string>Integer Calculator</string>
+              <string>Calculator</string>
               <key>CFBundleVersion</key>
               <string>1.0.0</string>
               <key>CFBundleShortVersionString</key>
@@ -142,6 +136,8 @@ jobs:
               <string>APPL</string>
               <key>LSMinimumSystemVersion</key>
               <string>10.15</string>
+              <key>NSHighResolutionCapable</key>
+              <true/>
           </dict>
           </plist>
           EOF
