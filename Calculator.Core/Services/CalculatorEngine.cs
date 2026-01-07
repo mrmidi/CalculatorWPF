@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace CalculatorWPF.Services
 {
     // Main calculator interface
@@ -22,8 +20,10 @@ namespace CalculatorWPF.Services
                     return "Error - Expression cannot be empty";
                 }
 
-                BigInteger result = _evaluator.Evaluate(expression);
-                return result.ToString();
+                decimal result = _evaluator.Evaluate(expression);
+                
+                // Format result to remove unnecessary trailing zeros
+                return result.ToString("G29"); // G29 gives max precision without trailing zeros
             }
             catch (DivideByZeroException)
             {

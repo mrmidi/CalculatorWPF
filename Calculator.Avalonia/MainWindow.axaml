@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Calculator.AvaloniaApp.MainWindow"
+        Width="900" Height="600" Title="Integer Calculator" MinHeight="500" MinWidth="700"
+        Background="#0B0C0D">
+  <Grid Margin="20">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <!-- Header -->
+    <TextBlock Grid.Row="0" Text="Integer Calculator"
+               FontSize="28" FontWeight="Bold" Margin="0,0,0,20" Foreground="#2563EB" />
+
+    <!-- Main Content -->
+    <TabControl Grid.Row="1" BorderThickness="0" SelectedIndex="0">
+      <!-- Calculator Tab -->
+      <TabItem Header="Calculator" FontSize="14" Padding="10,5">
+        <Grid Margin="20">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+          </Grid.RowDefinitions>
+
+          <!-- Expression Input -->
+          <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Enter Expression:" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="#9CA3AF"/>
+            <TextBox x:Name="ExpressionTextBox" FontSize="16" MinHeight="40" />
+            <TextBlock Text="Example: 2.5 + 3 * 2^3" FontSize="11" Margin="0,5,0,0" Foreground="#9CA3AF"/>
+          </StackPanel>
+
+          <!-- Calculate Button -->
+          <Button Grid.Row="1" x:Name="CalcButton" Content="Calculate" FontSize="16" Height="45" Margin="0,0,0,20" />
+
+          <!-- Result -->
+          <StackPanel Grid.Row="2" Margin="0,0,0,20">
+            <TextBlock Text="Result:" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="#9CA3AF" />
+            <Border Background="#151617" BorderBrush="#2A2E31" BorderThickness="1" Padding="15" MinHeight="60" CornerRadius="6">
+              <TextBlock x:Name="ResultTextBlock" Text="Enter an expression and click Calculate" FontSize="18" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            </Border>
+          </StackPanel>
+
+          <!-- Calculator Information -->
+          <Border Grid.Row="3" Background="#1F2224" BorderBrush="#2A2E31" BorderThickness="1" CornerRadius="6" Padding="12">
+            <StackPanel>
+              <TextBlock Text="Calculator Information:" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="#9CA3AF"/>
+              <TextBlock Text="• Available operations: + (addition), - (subtraction), * (multiplication), / (division), ^ (power/exponentiation)" Margin="0,2" TextWrapping="Wrap" Foreground="#9CA3AF"/>
+              <TextBlock Text="• Operator precedence: power (highest), then multiplication and division, then addition and subtraction" Margin="0,2" TextWrapping="Wrap" Foreground="#9CA3AF"/>
+              <TextBlock Text="• Supports decimal numbers (e.g., 3.14, 0.5, .25) and negative numbers (e.g., -5, 2 + -3.5)" Margin="0,2" TextWrapping="Wrap" Foreground="#9CA3AF"/>
+              <TextBlock Text="• Power operator is right-associative: 2^3^2 = 2^(3^2) = 512" Margin="0,2" TextWrapping="Wrap" Foreground="#9CA3AF"/>
+            </StackPanel>
+          </Border>
+        </Grid>
+      </TabItem>
+
+      <!-- Batch Processing Tab -->
+      <TabItem Header="Batch File Processing" FontSize="14" Padding="10,5">
+        <Grid Margin="20">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+          </Grid.RowDefinitions>
+
+          <!-- Input File -->
+          <StackPanel Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="Input File:" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="#9CA3AF"/>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+              </Grid.ColumnDefinitions>
+              <TextBox x:Name="InputFileBox" Grid.Column="0" FontSize="14" Height="40" Margin="0,0,10,0" />
+              <Button Grid.Column="1" x:Name="InputBrowseButton" Content="Browse..." Width="100" Height="40"/>
+            </Grid>
+          </StackPanel>
+
+          <!-- Output File -->
+          <StackPanel Grid.Row="1" Margin="0,0,0,15">
+            <TextBlock Text="Output File:" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="#9CA3AF"/>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+              </Grid.ColumnDefinitions>
+              <TextBox x:Name="OutputFileBox" Grid.Column="0" FontSize="14" Height="40" Margin="0,0,10,0" />
+              <Button Grid.Column="1" x:Name="OutputBrowseButton" Content="Browse..." Width="100" Height="40"/>
+            </Grid>
+          </StackPanel>
+
+          <!-- Process Button -->
+          <Button Grid.Row="2" x:Name="ProcessButton" Content="Process File" FontSize="16" Height="45" Margin="0,0,0,15"/>
+
+          <!-- Progress Bar -->
+          <StackPanel Grid.Row="3" Margin="0,0,0,15">
+            <ProgressBar x:Name="ProgressBar" Height="25" Minimum="0" Maximum="100" Value="0"/>
+            <TextBlock x:Name="StatusBlock" Text="" FontSize="12" Margin="0,5,0,0" HorizontalAlignment="Center"/>
+          </StackPanel>
+
+          <!-- Status/Info -->
+          <Border Grid.Row="4" Background="#FFF3E0" BorderBrush="#FF9800" BorderThickness="1" CornerRadius="5" Padding="15" VerticalAlignment="Top">
+            <StackPanel>
+              <TextBlock Text="Batch Processing Information:" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="#000"/>
+              <TextBlock Text="• Input file should contain one expression per line" Margin="0,2" TextWrapping="Wrap" Foreground="#000"/>
+              <TextBlock Text="• Empty lines will be preserved in output" Margin="0,2" TextWrapping="Wrap" Foreground="#000"/>
+              <TextBlock Text="• Invalid expressions will show error messages in output" Margin="0,2" TextWrapping="Wrap" Foreground="#000"/>
+              <TextBlock Text="• Processing is done asynchronously - UI remains responsive" Margin="0,2" TextWrapping="Wrap" Foreground="#000"/>
+            </StackPanel>
+          </Border>
+        </Grid>
+      </TabItem>
+    </TabControl>
+  </Grid>
+</Window>

@@ -1,0 +1,198 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      
+      - name: Restore dependencies
+        run: dotnet restore CalculatorWPF.Tests/CalculatorWPF.Tests.csproj
+      
+      - name: Run tests
+        run: dotnet test CalculatorWPF.Tests/CalculatorWPF.Tests.csproj --configuration Release --no-restore --verbosity normal
+
+  build-windows-x64:
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      
+      - name: Restore dependencies
+        run: dotnet restore CalculatorWPF/CalculatorWPF.csproj
+      
+      - name: Build WPF x64
+        run: dotnet publish CalculatorWPF/CalculatorWPF.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:PublishTrimmed=false -o publish/win-x64
+      
+      - name: Package Windows x64
+        run: |
+          cd publish/win-x64
+          Compress-Archive -Path * -DestinationPath ../../CalculatorWPF-win-x64.zip
+      
+      - name: Upload Windows x64 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CalculatorWPF-win-x64
+          path: CalculatorWPF-win-x64.zip
+
+  build-windows-arm64:
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      
+      - name: Restore dependencies
+        run: dotnet restore CalculatorWPF/CalculatorWPF.csproj
+      
+      - name: Build WPF ARM64
+        run: dotnet publish CalculatorWPF/CalculatorWPF.csproj -c Release -r win-arm64 --self-contained -p:PublishSingleFile=true -p:PublishTrimmed=false -o publish/win-arm64
+      
+      - name: Package Windows ARM64
+        run: |
+          cd publish/win-arm64
+          Compress-Archive -Path * -DestinationPath ../../CalculatorWPF-win-arm64.zip
+      
+      - name: Upload Windows ARM64 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CalculatorWPF-win-arm64
+          path: CalculatorWPF-win-arm64.zip
+
+  build-macos-universal:
+    needs: test
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      
+      - name: Restore dependencies
+        run: dotnet restore Calculator.Avalonia/Calculator.Avalonia.csproj
+      
+      - name: Build Avalonia macOS ARM64
+        run: dotnet publish Calculator.Avalonia/Calculator.Avalonia.csproj -c Release -r osx-arm64 --self-contained -p:PublishSingleFile=true -p:PublishTrimmed=false -o publish/osx-arm64
+      
+      - name: Build Avalonia macOS x64
+        run: dotnet publish Calculator.Avalonia/Calculator.Avalonia.csproj -c Release -r osx-x64 --self-contained -p:PublishSingleFile=true -p:PublishTrimmed=false -o publish/osx-x64
+      
+      - name: Create Universal Binary
+        run: |
+          mkdir -p publish/osx-universal
+          
+          # Use lipo to create universal binary
+          lipo -create \
+            publish/osx-arm64/Calculator.Avalonia \
+            publish/osx-x64/Calculator.Avalonia \
+            -output publish/osx-universal/Calculator.Avalonia
+          
+          chmod +x publish/osx-universal/Calculator.Avalonia
+          
+          # Verify universal binary
+          lipo -info publish/osx-universal/Calculator.Avalonia
+      
+      - name: Create macOS App Bundle
+        run: |
+          mkdir -p "CalculatorWPF.app/Contents/MacOS"
+          mkdir -p "CalculatorWPF.app/Contents/Resources"
+          
+          # Copy universal binary
+          cp publish/osx-universal/Calculator.Avalonia "CalculatorWPF.app/Contents/MacOS/CalculatorWPF"
+          chmod +x "CalculatorWPF.app/Contents/MacOS/CalculatorWPF"
+          
+          # Create Info.plist
+          cat > "CalculatorWPF.app/Contents/Info.plist" << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>CFBundleExecutable</key>
+              <string>CalculatorWPF</string>
+              <key>CFBundleIdentifier</key>
+              <string>com.calculator.wpf</string>
+              <key>CFBundleName</key>
+              <string>Integer Calculator</string>
+              <key>CFBundleVersion</key>
+              <string>1.0.0</string>
+              <key>CFBundleShortVersionString</key>
+              <string>1.0.0</string>
+              <key>CFBundlePackageType</key>
+              <string>APPL</string>
+              <key>LSMinimumSystemVersion</key>
+              <string>10.15</string>
+          </dict>
+          </plist>
+          EOF
+      
+      - name: Install create-dmg
+        run: brew install create-dmg
+      
+      - name: Create DMG
+        run: |
+          create-dmg \
+            --volname "Integer Calculator" \
+            --window-pos 200 120 \
+            --window-size 600 400 \
+            --icon-size 100 \
+            --app-drop-link 450 185 \
+            "CalculatorWPF-macOS-universal.dmg" \
+            "CalculatorWPF.app" || true
+          
+          # Fallback if create-dmg fails
+          if [ ! -f "CalculatorWPF-macOS-universal.dmg" ]; then
+            hdiutil create -volname "Integer Calculator" -srcfolder "CalculatorWPF.app" -ov -format UDZO "CalculatorWPF-macOS-universal.dmg"
+          fi
+      
+      - name: Upload macOS Universal artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CalculatorWPF-macOS-universal
+          path: CalculatorWPF-macOS-universal.dmg
+
+  release:
+    needs: [build-windows-x64, build-windows-arm64, build-macos-universal]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/CalculatorWPF-win-x64/CalculatorWPF-win-x64.zip
+            artifacts/CalculatorWPF-win-arm64/CalculatorWPF-win-arm64.zip
+            artifacts/CalculatorWPF-macOS-universal/CalculatorWPF-macOS-universal.dmg
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

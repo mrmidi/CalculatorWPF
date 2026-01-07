@@ -1,4 +1,3 @@
-using System.Numerics;
 using System.Text;
 using CalculatorWPF.Models;
 
@@ -71,13 +70,9 @@ namespace CalculatorWPF.Services
                         _position++;
                     }
                 }
-                else if (char.IsDigit(current))
+                else if (char.IsDigit(current) || current == '.')
                 {
                     tokens.Add(ReadNumber(false));
-                }
-                else if (current == '.')
-                {
-                    throw new InvalidOperationException($"Invalid character: '{current}'. Decimal numbers are not supported.");
                 }
                 else
                 {
@@ -89,7 +84,7 @@ namespace CalculatorWPF.Services
             return tokens;
         }
 
-        // Reads a number from current position
+        // Reads a number from current position (supports decimals)
         private Token ReadNumber(bool isNegative)
         {
             int startPos = _position;
@@ -102,24 +97,46 @@ namespace CalculatorWPF.Services
                 SkipWhitespace();
             }
 
-            if (_position >= _expression.Length || !char.IsDigit(_expression[_position]))
+            // Handle numbers starting with decimal point (e.g., ".5")
+            if (_position >= _expression.Length || 
+                (!char.IsDigit(_expression[_position]) && _expression[_position] != '.'))
             {
                 throw new InvalidOperationException($"Expected digit at position {_position}");
             }
 
-            while (_position < _expression.Length && char.IsDigit(_expression[_position]))
+            bool hasDecimalPoint = false;
+            bool hasDigits = false;
+
+            // Read integer part and decimal part
+            while (_position < _expression.Length)
             {
-                sb.Append(_expression[_position]);
-                _position++;
+                char c = _expression[_position];
+                
+                if (char.IsDigit(c))
+                {
+                    sb.Append(c);
+                    hasDigits = true;
+                    _position++;
+                }
+                else if (c == '.' && !hasDecimalPoint)
+                {
+                    sb.Append(c);
+                    hasDecimalPoint = true;
+                    _position++;
+                }
+                else
+                {
+                    break;
+                }
             }
 
-            if (_position < _expression.Length && _expression[_position] == '.')
+            if (!hasDigits)
             {
-                throw new InvalidOperationException($"Invalid character: '.'. Decimal numbers are not supported.");
+                throw new InvalidOperationException($"Invalid number format at position {startPos}: no digits found");
             }
 
             string numberStr = sb.ToString();
-            if (!BigInteger.TryParse(numberStr, out BigInteger value))
+            if (!decimal.TryParse(numberStr, out decimal value))
             {
                 throw new InvalidOperationException($"Invalid number format at position {startPos}: '{numberStr}'");
             }

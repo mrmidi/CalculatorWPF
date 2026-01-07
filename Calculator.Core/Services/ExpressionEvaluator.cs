@@ -1,4 +1,3 @@
-using System.Numerics;
 using CalculatorWPF.Models;
 
 namespace CalculatorWPF.Services
@@ -14,7 +13,7 @@ namespace CalculatorWPF.Services
         }
 
         // Evaluates expression and returns result
-        public BigInteger Evaluate(string expression)
+        public decimal Evaluate(string expression)
         {
             if (string.IsNullOrWhiteSpace(expression))
             {
@@ -36,9 +35,9 @@ namespace CalculatorWPF.Services
         }
 
         // Evaluates an RPN expression
-        private BigInteger EvaluateRpn(List<Token> rpnTokens)
+        private decimal EvaluateRpn(List<Token> rpnTokens)
         {
-            var stack = new Stack<BigInteger>();
+            var stack = new Stack<decimal>();
 
             foreach (var token in rpnTokens)
             {
@@ -54,14 +53,14 @@ namespace CalculatorWPF.Services
                     }
 
                     // Note: Pop order matters - second operand comes first
-                    BigInteger right = stack.Pop();
-                    BigInteger left = stack.Pop();
+                    decimal right = stack.Pop();
+                    decimal left = stack.Pop();
 
-                    BigInteger result = token.Operator switch
+                    decimal result = token.Operator switch
                     {
-                        "+" => BigInteger.Add(left, right),
-                        "-" => BigInteger.Subtract(left, right),
-                        "*" => BigInteger.Multiply(left, right),
+                        "+" => left + right,
+                        "-" => left - right,
+                        "*" => left * right,
                         "/" => DivideWithCheck(left, right),
                         "^" => Power(left, right),
                         _ => throw new InvalidOperationException($"Unknown operator: {token.Operator}")
@@ -80,30 +79,42 @@ namespace CalculatorWPF.Services
         }
 
         // Performs division with zero check
-        private BigInteger DivideWithCheck(BigInteger left, BigInteger right)
+        private decimal DivideWithCheck(decimal left, decimal right)
         {
             if (right == 0)
             {
                 throw new DivideByZeroException("Division by zero");
             }
-            return BigInteger.Divide(left, right);
+            return left / right;
         }
 
         // Computes power (exponentiation)
-        private BigInteger Power(BigInteger baseValue, BigInteger exponent)
+        private decimal Power(decimal baseValue, decimal exponent)
         {
-            if (exponent < 0)
+            // For decimal, we need to handle fractional exponents differently
+            // We'll use Math.Pow and convert to/from double
+            // Note: This may lose some precision for very large numbers
+            
+            if (baseValue == 0 && exponent < 0)
             {
-                throw new InvalidOperationException("Negative exponents are not supported");
+                throw new InvalidOperationException("Cannot raise zero to a negative power");
             }
 
-            // BigInteger.Pow requires int exponent
-            if (exponent > int.MaxValue)
+            try
             {
-                throw new InvalidOperationException("Exponent is too large");
-            }
+                double result = Math.Pow((double)baseValue, (double)exponent);
+                
+                if (double.IsInfinity(result) || double.IsNaN(result))
+                {
+                    throw new InvalidOperationException("Power operation resulted in overflow or invalid result");
+                }
 
-            return BigInteger.Pow(baseValue, (int)exponent);
+                return (decimal)result;
+            }
+            catch (OverflowException)
+            {
+                throw new InvalidOperationException("Power operation resulted in overflow");
+            }
         }
     }
 }
