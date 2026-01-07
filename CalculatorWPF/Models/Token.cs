@@ -24,6 +24,8 @@ namespace CalculatorWPF.Models
     {
         Number,
         Operator,
+        LeftParenthesis,
+        RightParenthesis,
         End
     }
 }

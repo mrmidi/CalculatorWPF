@@ -3,16 +3,14 @@ using CalculatorWPF.Models;
 
 namespace CalculatorWPF.Services
 {
-    // Evaluates expressions with proper operator precedence
+    // Evaluates expressions using Reverse Polish Notation (RPN)
     public class ExpressionEvaluator
     {
-        private List<Token> _tokens;
-        private int _currentIndex;
+        private readonly RpnConverter _rpnConverter;
 
         public ExpressionEvaluator()
         {
-            _tokens = new List<Token>();
-            _currentIndex = 0;
+            _rpnConverter = new RpnConverter();
         }
 
         // Evaluates expression and returns result
@@ -23,108 +21,89 @@ namespace CalculatorWPF.Services
                 throw new InvalidOperationException("Expression cannot be empty");
             }
 
+            // Tokenize the expression
             var tokenizer = new Tokenizer(expression);
-            _tokens = tokenizer.Tokenize();
-            _currentIndex = 0;
+            var tokens = tokenizer.Tokenize();
 
-            BigInteger result = ParseExpression();
+            // Validate parentheses matching
+            _rpnConverter.ValidateParentheses(tokens);
 
-            // Make sure we parsed everything
-            if (_currentIndex < _tokens.Count - 1)
-            {
-                throw new InvalidOperationException($"Unexpected token at position {_tokens[_currentIndex].Position}");
-            }
+            // Convert to RPN
+            var rpnTokens = _rpnConverter.ConvertToRpn(tokens);
 
-            return result;
+            // Evaluate RPN expression
+            return EvaluateRpn(rpnTokens);
         }
 
-        // Handles + and - (lowest precedence)
-        private BigInteger ParseExpression()
+        // Evaluates an RPN expression
+        private BigInteger EvaluateRpn(List<Token> rpnTokens)
         {
-            BigInteger left = ParseTerm();
+            var stack = new Stack<BigInteger>();
 
-            while (_currentIndex < _tokens.Count)
+            foreach (var token in rpnTokens)
             {
-                Token current = _tokens[_currentIndex];
-                
-                if (current.Type == TokenType.Operator && (current.Operator == "+" || current.Operator == "-"))
+                if (token.Type == TokenType.Number)
                 {
-                    _currentIndex++;
-                    BigInteger right = ParseTerm();
-
-                    if (current.Operator == "+")
-                    {
-                        left = BigInteger.Add(left, right);
-                    }
-                    else
-                    {
-                        left = BigInteger.Subtract(left, right);
-                    }
+                    stack.Push(token.Value!.Value);
                 }
-                else
+                else if (token.Type == TokenType.Operator)
                 {
-                    break;
+                    if (stack.Count < 2)
+                    {
+                        throw new InvalidOperationException($"Invalid expression: not enough operands for operator '{token.Operator}' at position {token.Position}");
+                    }
+
+                    // Note: Pop order matters - second operand comes first
+                    BigInteger right = stack.Pop();
+                    BigInteger left = stack.Pop();
+
+                    BigInteger result = token.Operator switch
+                    {
+                        "+" => BigInteger.Add(left, right),
+                        "-" => BigInteger.Subtract(left, right),
+                        "*" => BigInteger.Multiply(left, right),
+                        "/" => DivideWithCheck(left, right),
+                        "^" => Power(left, right),
+                        _ => throw new InvalidOperationException($"Unknown operator: {token.Operator}")
+                    };
+
+                    stack.Push(result);
                 }
             }
 
-            return left;
+            if (stack.Count != 1)
+            {
+                throw new InvalidOperationException("Invalid expression: too many operands");
+            }
+
+            return stack.Pop();
         }
 
-        // Handles * and / (higher precedence)
-        private BigInteger ParseTerm()
+        // Performs division with zero check
+        private BigInteger DivideWithCheck(BigInteger left, BigInteger right)
         {
-            BigInteger left = ParseFactor();
-
-            while (_currentIndex < _tokens.Count)
+            if (right == 0)
             {
-                Token current = _tokens[_currentIndex];
-                
-                if (current.Type == TokenType.Operator && (current.Operator == "*" || current.Operator == "/"))
-                {
-                    string op = current.Operator;
-                    _currentIndex++;
-                    BigInteger right = ParseFactor();
-
-                    if (op == "*")
-                    {
-                        left = BigInteger.Multiply(left, right);
-                    }
-                    else
-                    {
-                        // Check for division by zero
-                        if (right == 0)
-                        {
-                            throw new DivideByZeroException("Division by zero");
-                        }
-                        left = BigInteger.Divide(left, right);
-                    }
-                }
-                else
-                {
-                    break;
-                }
+                throw new DivideByZeroException("Division by zero");
             }
-
-            return left;
+            return BigInteger.Divide(left, right);
         }
 
-        // Reads a number
-        private BigInteger ParseFactor()
+        // Computes power (exponentiation)
+        private BigInteger Power(BigInteger baseValue, BigInteger exponent)
         {
-            if (_currentIndex >= _tokens.Count)
+            if (exponent < 0)
             {
-                throw new InvalidOperationException("Unexpected end of expression");
+                throw new InvalidOperationException("Negative exponents are not supported");
             }
 
-            Token current = _tokens[_currentIndex];
-
-            if (current.Type == TokenType.Number)
+            // BigInteger.Pow requires int exponent
+            if (exponent > int.MaxValue)
             {
-                _currentIndex++;
-                return current.Value!.Value;
+                throw new InvalidOperationException("Exponent is too large");
             }
 
-            throw new InvalidOperationException($"Expected number at position {current.Position}");
+            return BigInteger.Pow(baseValue, (int)exponent);
         }
     }
 }
