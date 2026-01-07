@@ -109,7 +109,25 @@
                         </Border>
                     </StackPanel>
 
-                   
+                    <!-- Calculator Information -->
+                    <Border Grid.Row="3" 
+                            Background="#E3F2FD" 
+                            BorderBrush="#2196F3" 
+                            BorderThickness="1"
+                            CornerRadius="5"
+                            Padding="15"
+                            VerticalAlignment="Top">
+                        <StackPanel>
+                            <TextBlock Text="Calculator Information:" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                            <TextBlock Text="• Available operations: + (addition), - (subtraction), * (multiplication), / (division)" Margin="0,2" TextWrapping="Wrap"/>
+                            <TextBlock Text="• Operator precedence: multiplication and division are calculated before addition and subtraction" Margin="0,2" TextWrapping="Wrap"/>
+                            <TextBlock Text="• Supports negative numbers (e.g., -5, 2 + -3)" Margin="0,2" TextWrapping="Wrap"/>
+                            <TextBlock Text="• Supports large numbers (no size limit)" Margin="0,2" TextWrapping="Wrap"/>
+                            <TextBlock Text="• Only integers are supported - decimal numbers are not allowed" Margin="0,2" TextWrapping="Wrap"/>
+                            <TextBlock Text="• Division by zero will show an error message" Margin="0,2" TextWrapping="Wrap"/>
+                            <TextBlock Text="• Press Enter to calculate or click the Calculate button" Margin="0,2" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
                 </Grid>
             </TabItem>
 
