@@ -26,7 +26,7 @@ namespace CalculatorWPF.Services
             var tokens = tokenizer.Tokenize();
 
             // Validate parentheses matching
-            RpnConverter.ValidateParentheses(tokens);
+            _rpnConverter.ValidateParentheses(tokens);
 
             // Convert to RPN
             var rpnTokens = _rpnConverter.ConvertToRpn(tokens);

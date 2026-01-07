@@ -6,6 +6,13 @@ namespace CalculatorWPF.Tests.Services
 {
     public class ParenthesesValidationTests
     {
+        private readonly RpnConverter _converter;
+
+        public ParenthesesValidationTests()
+        {
+            _converter = new RpnConverter();
+        }
+
         [Fact]
         public void ValidateParentheses_BalancedParentheses_DoesNotThrow()
         {
@@ -14,7 +21,7 @@ namespace CalculatorWPF.Tests.Services
             var tokens = tokenizer.Tokenize();
 
             // Act & Assert - should not throw
-            RpnConverter.ValidateParentheses(tokens);
+            _converter.ValidateParentheses(tokens);
         }
 
         [Fact]
@@ -25,7 +32,7 @@ namespace CalculatorWPF.Tests.Services
             var tokens = tokenizer.Tokenize();
 
             // Act & Assert - should not throw
-            RpnConverter.ValidateParentheses(tokens);
+            _converter.ValidateParentheses(tokens);
         }
 
         [Fact]
@@ -36,7 +43,7 @@ namespace CalculatorWPF.Tests.Services
             var tokens = tokenizer.Tokenize();
 
             // Act & Assert - should not throw
-            RpnConverter.ValidateParentheses(tokens);
+            _converter.ValidateParentheses(tokens);
         }
 
         [Fact]
@@ -48,7 +55,7 @@ namespace CalculatorWPF.Tests.Services
 
             // Act & Assert
             var exception = Assert.Throws<InvalidOperationException>(() => 
-                RpnConverter.ValidateParentheses(tokens));
+                _converter.ValidateParentheses(tokens));
             Assert.Contains("Mismatched parentheses", exception.Message);
             Assert.Contains("no opening parenthesis", exception.Message);
         }
@@ -62,7 +69,7 @@ namespace CalculatorWPF.Tests.Services
 
             // Act & Assert
             var exception = Assert.Throws<InvalidOperationException>(() => 
-                RpnConverter.ValidateParentheses(tokens));
+                _converter.ValidateParentheses(tokens));
             Assert.Contains("Mismatched parentheses", exception.Message);
             Assert.Contains("unclosed opening parenthesis", exception.Message);
         }
@@ -76,7 +83,7 @@ namespace CalculatorWPF.Tests.Services
 
             // Act & Assert
             var exception = Assert.Throws<InvalidOperationException>(() => 
-                RpnConverter.ValidateParentheses(tokens));
+                _converter.ValidateParentheses(tokens));
             Assert.Contains("Mismatched parentheses", exception.Message);
             Assert.Contains("unclosed opening parenthesis", exception.Message);
         }
@@ -90,7 +97,7 @@ namespace CalculatorWPF.Tests.Services
 
             // Act & Assert
             var exception = Assert.Throws<InvalidOperationException>(() => 
-                RpnConverter.ValidateParentheses(tokens));
+                _converter.ValidateParentheses(tokens));
             Assert.Contains("Mismatched parentheses", exception.Message);
             Assert.Contains("no opening parenthesis", exception.Message);
         }
@@ -103,7 +110,7 @@ namespace CalculatorWPF.Tests.Services
             var tokens = tokenizer.Tokenize();
 
             // Act & Assert - should not throw
-            RpnConverter.ValidateParentheses(tokens);
+            _converter.ValidateParentheses(tokens);
         }
 
         [Fact]
@@ -123,7 +130,7 @@ namespace CalculatorWPF.Tests.Services
 
             // Act & Assert - Validation passes (empty parens are valid syntax)
             // The error will be caught during RPN evaluation
-            RpnConverter.ValidateParentheses(tokens);
+            _converter.ValidateParentheses(tokens);
         }
 
         [Theory]
@@ -138,7 +145,7 @@ namespace CalculatorWPF.Tests.Services
 
             // Act & Assert
             var exception = Assert.Throws<InvalidOperationException>(() => 
-                RpnConverter.ValidateParentheses(tokens));
+                _converter.ValidateParentheses(tokens));
             Assert.Contains("Mismatched parentheses", exception.Message);
         }
 
@@ -154,7 +161,7 @@ namespace CalculatorWPF.Tests.Services
 
             // Act & Assert
             var exception = Assert.Throws<InvalidOperationException>(() => 
-                RpnConverter.ValidateParentheses(tokens));
+                _converter.ValidateParentheses(tokens));
             Assert.Contains("Mismatched parentheses", exception.Message);
         }
 
@@ -166,7 +173,7 @@ namespace CalculatorWPF.Tests.Services
             var tokens = tokenizer.Tokenize();
 
             // Act & Assert - should not throw
-            RpnConverter.ValidateParentheses(tokens);
+            _converter.ValidateParentheses(tokens);
         }
 
         [Fact]
@@ -177,7 +184,7 @@ namespace CalculatorWPF.Tests.Services
             var tokens = tokenizer.Tokenize();
 
             // Act & Assert - should not throw
-            RpnConverter.ValidateParentheses(tokens);
+            _converter.ValidateParentheses(tokens);
         }
     }
 }

@@ -107,7 +107,7 @@ namespace CalculatorWPF.Services
         }
 
         // Validates that all parentheses are properly matched
-        public static void ValidateParentheses(List<Token> tokens)
+        public void ValidateParentheses(List<Token> tokens)
         {
             int openCount = 0;
             Token? firstOpenParen = null;
@@ -134,7 +134,8 @@ namespace CalculatorWPF.Services
 
             if (openCount > 0)
             {
-                throw new InvalidOperationException($"Mismatched parentheses: unclosed opening parenthesis at position {firstOpenParen?.Position ?? 0}");
+                int position = firstOpenParen?.Position ?? 0;
+                throw new InvalidOperationException($"Mismatched parentheses: unclosed opening parenthesis at position {position}");
             }
         }
     }
