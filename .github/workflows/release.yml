@@ -145,6 +145,9 @@ jobs:
           </dict>
           </plist>
           EOF
+          
+          # Ad-hoc code sign (helps with Gatekeeper)
+          codesign --force --deep --sign - "CalculatorWPF.app"
       
       - name: Install create-dmg
         run: brew install create-dmg

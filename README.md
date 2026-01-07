@@ -1,10 +1,28 @@
 # Calculator WPF
 
-Integer calculator with WPF interface. Supports basic math operations and batch file processing.
+Cross-platform decimal calculator with WPF (Windows) and Avalonia (macOS/Linux) interfaces. Supports basic math operations, decimals, and batch file processing.
+
+## 📥 Installation
+
+### macOS Users
+**⚠️ Important:** If you get a "damaged app" error when opening the DMG, see [INSTALL_MACOS.md](INSTALL_MACOS.md) for simple fix instructions.
+
+Quick fix in Terminal:
+```bash
+xattr -cr ~/Downloads/CalculatorWPF.app
+```
+
+### Windows Users
+Download the appropriate ZIP file for your system:
+- **Windows x64**: Most modern Windows PCs
+- **Windows ARM64**: ARM-based Windows devices (Surface Pro X, etc.)
+
+Extract and run `CalculatorWPF.exe`
 
 ## Features
 
 - Basic operations: +, -, *, /
+- **Decimal number support**: 3.14, 0.5, .25
 - Power/exponentiation: ^
 - Parentheses for grouping: ( )
 - Proper operator precedence using RPN (Reverse Polish Notation)
@@ -12,8 +30,8 @@ Integer calculator with WPF interface. Supports basic math operations and batch 
   - Exponentiation (^) - right associative
   - Multiplication and Division
   - Addition and Subtraction (lowest)
-- Negative numbers
-- Large number support (BigInteger)
+- Negative numbers and negative exponents
+- Decimal precision (28-29 digits)
 - Batch file processing
 - Async file operations
 
