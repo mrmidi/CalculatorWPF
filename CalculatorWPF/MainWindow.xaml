@@ -41,7 +41,7 @@
                         <TextBox x:Name="ExpressionTextBox" 
                                  FontSize="16" 
                                  Padding="10"
-                                 Height="40"
+                                 MinHeight="40"
                                  VerticalContentAlignment="Center"
                                  BorderBrush="#BDC3C7"
                                  BorderThickness="2"/>
