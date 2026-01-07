@@ -30,15 +30,29 @@ namespace CalculatorWPF.Services
 
                 char current = _expression[_position];
 
-                if (IsOperator(current))
+                if (current == '(')
+                {
+                    tokens.Add(new Token(TokenType.LeftParenthesis, _position));
+                    _position++;
+                }
+                else if (current == ')')
+                {
+                    tokens.Add(new Token(TokenType.RightParenthesis, _position));
+                    _position++;
+                }
+                else if (IsOperator(current))
                 {
                     // Handle negative numbers (unary minus)
-                    if (current == '-' && (tokens.Count == 0 || tokens.Last().Type == TokenType.Operator))
+                    if (current == '-' && (tokens.Count == 0 || 
+                        tokens.Last().Type == TokenType.Operator ||
+                        tokens.Last().Type == TokenType.LeftParenthesis))
                     {
                         tokens.Add(ReadNumber(true));
                     }
                     // Skip unary plus
-                    else if (current == '+' && (tokens.Count == 0 || tokens.Last().Type == TokenType.Operator))
+                    else if (current == '+' && (tokens.Count == 0 || 
+                        tokens.Last().Type == TokenType.Operator ||
+                        tokens.Last().Type == TokenType.LeftParenthesis))
                     {
                         _position++;
                     }
@@ -116,7 +130,7 @@ namespace CalculatorWPF.Services
         // Checks if character is a math operator
         private static bool IsOperator(char c)
         {
-            return c == '+' || c == '-' || c == '*' || c == '/';
+            return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
         }
     }
 }
